@@ -3,10 +3,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
-import java.awt.*;
 
-public class MyFrame extends JFrame {
+public class MyFrame extends JFrame implements ActionListener {
+
+    public String currentText = "";
+    public JTextField screen = new JTextField();
+
     private final String[] buttonLabels = {
             "(", ")", "mc", "m+", "m-", "mr", "c", "+/-", "%", "÷",
             "2ⁿᵈ", "x²", "x³", " xʸ", "eˣ", "10ˣ", "7", "8", "9", "×",
@@ -24,11 +26,11 @@ public class MyFrame extends JFrame {
 
         setLayout(new BorderLayout());
 
-        JTextField screen = new JTextField();
         screen.setFont(new Font("Arial", Font.BOLD, 20));
         screen.setHorizontalAlignment(JTextField.RIGHT);
         screen.setEditable(false);
         screen.setBackground(new Color(50,50,47));
+        screen.setForeground(new Color(235, 233, 232));
         screen.setBorder(BorderFactory.createMatteBorder(1,1,1,1, new Color(50,50,47)));
         screen.setSize(900,300);
         add(screen, BorderLayout.NORTH);
@@ -41,6 +43,8 @@ public class MyFrame extends JFrame {
 
         for (String label : buttonLabels) {
             JButton button = new JButton(label);
+            button.addActionListener(this);
+
             button.setFocusable(false);
             button.setForeground(new Color(235, 233, 232));
             button.setBorder(BorderFactory.createEtchedBorder());
@@ -52,6 +56,7 @@ public class MyFrame extends JFrame {
             } else {
                 button.setBackground(new Color(69, 68, 66));
             }
+
             buttonsPanel.add(button);
         }
 
@@ -60,25 +65,108 @@ public class MyFrame extends JFrame {
         setVisible(true);
     }
 
-}
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
+        if (command.equals("=")) {
+            currentText = currentText.replace("×", "*");
+            currentText = currentText.replace("÷", "/");
+            System.out.println(eval(currentText));
+            currentText = eval(currentText) + "";
+        }
+        else if(command.equals("c")){
+            currentText = "";
+        }
+        else {
+            currentText += command;
+        }
+        screen.setText(currentText);
+    }
 
-//
-//        btn1.setBounds(1,1,75,45);
-//        btn1.addActionListener((ActionListener) e-> System.out.println("("));
-//        btn1.setSize(70,45);
-//        btn1.setForeground(new Color(45,68,66));
-//        btn2.setBackground(new Color(255,233,232));
-//
-//        btn2.setBounds(1,70,70,45);
-//        btn2.setSize(70,45);
-//        btn2.addActionListener((ActionListener) e-> System.out.println("2nd"));
-//        btn2.setForeground(new Color(45,68,66));
-//        btn2.setBackground(new Color(255,233,232));
-//
-//
-//        btn3.setBounds(1,140,70,45);
-//        btn3.setSize(70,45);
-//        btn3.addActionListener((ActionListener) e-> System.out.println("2nd"));
-//        btn3.setForeground(new Color(45,68,66));
-//        btn3.setBackground(new Color(255,233,232));
+    public static double eval(final String str) {
+        return new Object() {
+            int pos = -1, ch;
+
+            void nextChar() {
+                ch = (++pos < str.length()) ? str.charAt(pos) : -1;
+            }
+
+            boolean eat(int charToEat) {
+                while (ch == ' ') nextChar();
+                if (ch == charToEat) {
+                    nextChar();
+                    return true;
+                }
+                return false;
+            }
+
+            double parse() {
+                nextChar();
+                double x = parseExpression();
+                if (pos < str.length()) throw new RuntimeException("Unexpected: " + (char)ch);
+                return x;
+            }
+
+            // Grammar:
+            // expression = term | expression `+` term | expression `-` term
+            // term = factor | term `*` factor | term `/` factor
+            // factor = `+` factor | `-` factor | `(` expression `)` | number
+            //        | functionName `(` expression `)` | functionName factor
+            //        | factor `^` factor
+
+            double parseExpression() {
+                double x = parseTerm();
+                for (;;) {
+                    if      (eat('+')) x += parseTerm(); // addition
+                    else if (eat('-')) x -= parseTerm(); // subtraction
+                    else return x;
+                }
+            }
+
+            double parseTerm() {
+                double x = parseFactor();
+                for (;;) {
+                    if      (eat('*')) x *= parseFactor(); // multiplication
+                    else if (eat('/')) x /= parseFactor(); // division
+                    else return x;
+                }
+            }
+
+            double parseFactor() {
+                if (eat('+')) return +parseFactor(); // unary plus
+                if (eat('-')) return -parseFactor(); // unary minus
+
+                double x;
+                int startPos = this.pos;
+                if (eat('(')) { // parentheses
+                    x = parseExpression();
+                    if (!eat(')')) throw new RuntimeException("Missing ')'");
+                } else if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
+                    while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
+                    x = Double.parseDouble(str.substring(startPos, this.pos));
+                } else if (ch >= 'a' && ch <= 'z') { // functions
+                    while (ch >= 'a' && ch <= 'z') nextChar();
+                    String func = str.substring(startPos, this.pos);
+                    if (eat('(')) {
+                        x = parseExpression();
+                        if (!eat(')')) throw new RuntimeException("Missing ')' after argument to " + func);
+                    } else {
+                        x = parseFactor();
+                    }
+                    if (func.equals("sqrt")) x = Math.sqrt(x);
+                    else if (func.equals("sin")) x = Math.sin(Math.toRadians(x));
+                    else if (func.equals("cos")) x = Math.cos(Math.toRadians(x));
+                    else if (func.equals("tan")) x = Math.tan(Math.toRadians(x));
+                    else throw new RuntimeException("Unknown function: " + func);
+                } else {
+                    throw new RuntimeException("Unexpected: " + (char)ch);
+                }
+
+                if (eat('^')) x = Math.pow(x, parseFactor()); // exponentiation
+
+                return x;
+            }
+        }.parse();
+    }
+}
 
