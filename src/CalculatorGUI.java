@@ -85,6 +85,13 @@ public class CalculatorGUI extends JFrame implements ActionListener {
         else if(command.equals("c")){
             currentText = "";
         }
+        else if (command.equals("e")){
+            currentText = "2.718282";
+        }
+        else if (command.equals("π")){
+//
+            currentText ="3.141593";
+        }
         else {
             currentText += command;
         }

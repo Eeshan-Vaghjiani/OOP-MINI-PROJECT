@@ -70,6 +70,8 @@ public class Calculator{
                         x = parseFactor();
                     }
                     if (func.equals("sqrt")) x = Math.sqrt(x);
+                    else if(func.equals("ln")) x = Math.log(x);
+                    else if(func.equals("e")) x = Math.E;
                     else if (func.equals("sin")) x = Math.sin(Math.toRadians(x));
                     else if (func.equals("cos")) x = Math.cos(Math.toRadians(x));
                     else if (func.equals("tan")) x = Math.tan(Math.toRadians(x));
