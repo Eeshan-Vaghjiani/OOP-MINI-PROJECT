@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 
 public class CalculatorGUI extends JFrame implements ActionListener {
 
-    public String currentText = "0";
+    public String currentText = "";
     public JTextField screen = new JTextField();
     Calculator calc = new Calculator();
 
@@ -84,6 +84,9 @@ public class CalculatorGUI extends JFrame implements ActionListener {
         }
         else if(command.equals("c")){
             currentText = "0";
+        }
+        else if (command.equals("²√x")){
+            currentText = currentText.replace("²√x","sqrt");
         }
         else if (command.matches("\\+/-")) {
             if (currentText.charAt(0) == '-') {
