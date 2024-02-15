@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 
 public class CalculatorGUI extends JFrame implements ActionListener {
 
-    public String currentText = "";
+    public String currentText = "0";
     public JTextField screen = new JTextField();
     Calculator calc = new Calculator();
 
@@ -33,7 +33,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
         screen.setBackground(new Color(50,50,47));
         screen.setForeground(new Color(235, 233, 232));
         screen.setBorder(BorderFactory.createMatteBorder(1,1,1,1, new Color(50,50,47)));
-        screen.setSize(900,300);
+        screen.setSize(900,400);
         add(screen, BorderLayout.NORTH);
 
         JPanel buttonsPanel = new JPanel();
@@ -76,14 +76,22 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             double result = calc.eval(currentText);
             if (result % 1 == 0){
                 int int_result = (int) result;
-                currentText = int_result + "";
+                currentText = int_result + "0";
             }
             else{
                 currentText = result + "";
             }
         }
         else if(command.equals("c")){
-            currentText = "";
+            currentText = "0";
+        }
+        else if (command.matches("\\+/-")) {
+            if (currentText.charAt(0) == '-') {
+                currentText = currentText.substring(1);
+            } else {
+                currentText = "-" + currentText;
+            }
+
         }
         else {
             currentText += command;
