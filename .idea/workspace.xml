@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ee9cf781-b904-407d-9670-e557d9d8da35" name="Changes" comment="2">
-      <change beforePath="$PROJECT_DIR$/src/Calculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Calculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CalculatorGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CalculatorGUI.java" afterDir="false" />
-    </list>
+    <list default="true" id="ee9cf781-b904-407d-9670-e557d9d8da35" name="Changes" comment="Almost" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -17,6 +14,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
