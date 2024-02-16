@@ -29,7 +29,6 @@ public class CalculatorGUI extends JFrame implements ActionListener {
         setMinimumSize(new Dimension(700, 400)); // Set minimum window size
         getContentPane().setBackground(new Color(50, 50, 47)); // Set background color
         setLayout(new BorderLayout()); // Set layout manager for the frame
-
         // Initialize and configure the text field
         Font buttonFont = new Font("Arial", Font.PLAIN, 200); // Set font for text field
         screen.setHorizontalAlignment(JTextField.RIGHT); // Set text alignment to right
@@ -42,7 +41,14 @@ public class CalculatorGUI extends JFrame implements ActionListener {
         screen.setForeground(new Color(235, 233, 232)); // Set foreground color
         screen.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(50, 50, 47))); // Set border
         screen.setSize(900, 300); // Set initial size
-        add(screen, BorderLayout.NORTH); // Add text field to the frame's north position
+        add(screen, BorderLayout.NORTH); // Add text field to the frame's north position       screen.setFont(new Font("Arial", Font.BOLD, 20));
+        screen.setHorizontalAlignment(JTextField.RIGHT);
+        screen.setEditable(false);
+        screen.setBackground(new Color(50,50,47));
+        screen.setForeground(new Color(235, 233, 232));
+        screen.setBorder(BorderFactory.createMatteBorder(1,1,1,1, new Color(50,50,47)));
+        screen.setSize(900,400);
+        add(screen, BorderLayout.NORTH);aster
 
         // Initialize and configure the buttons panel
         JPanel buttonsPanel = new JPanel();
@@ -86,6 +92,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
     // ActionListener implementation
     @Override
     public void actionPerformed(ActionEvent e) {
+
         String command = e.getActionCommand(); // Get the action command of the button clicked
         switch (command) {
             // Handle different button actions
@@ -137,6 +144,34 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             default:
                 currentText += command; // Append the command to current text
                 break;
+
+        String command = e.getActionCommand();
+        if (command.equals("=")) {
+            currentText = currentText.replace("×", "*");
+            currentText = currentText.replace("÷", "/");
+            System.out.println(calc.eval(currentText));
+            double result = calc.eval(currentText);
+            if (result % 1 == 0){
+                int int_result = (int) result;
+                currentText = int_result + "0";
+            }
+            else{
+                currentText = result + "";
+            }
+        }
+        else if(command.equals("c")){
+            currentText = "0";
+        }
+        else if (command.equals("²√x")){
+            currentText = currentText.replace("²√x","sqrt");
+        }
+        else if (command.matches("\\+/-")) {
+            if (currentText.charAt(0) == '-') {
+                currentText = currentText.substring(1);
+            } else {
+                currentText = "-" + currentText;
+            }
+
         }
         screen.setText(currentText); // Update the text field with the current text
     }
