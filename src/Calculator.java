@@ -85,6 +85,7 @@ public class Calculator implements BasicCalculator{
                     else if (func.equals("sin")) x = Math.sin(Math.toRadians(x));
                     else if (func.equals("cos")) x = Math.cos(Math.toRadians(x));
                     else if (func.equals("tan")) x = Math.tan(Math.toRadians(x));
+
                     else if (func.equals("asin")) x = Math.toDegrees(Math.asin(x));
                     else if (func.equals("acos")) x = Math.toDegrees(Math.acos(x));
                     else if (func.equals("atan")) x = Math.toDegrees(Math.atan(x));
@@ -92,6 +93,9 @@ public class Calculator implements BasicCalculator{
                     else if (func.equals("log")) x = Math.log(x) / Math.log(10);
                     else if (func.equals("exp")) x = Math.exp(x);
                     else if (func.equals("abs")) x = Math.abs(x);
+
+                    else if (func.equals(("π"))) x = Math.PI;
+                    else if(func.equals("e")) x = Math.E;
                     else throw new RuntimeException("Unknown function: " + func);
                 } else {
                     throw new RuntimeException("Unexpected: " + (char)ch);
