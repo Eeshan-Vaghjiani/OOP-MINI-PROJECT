@@ -17,7 +17,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             "2ⁿᵈ", "x²", "x³", " xʸ", "eˣ", "10ˣ", "7", "8", "9", "×",
             "1/x", "²√x", "∛x", "ʸ√ₓ", "ln", "log₁₀", "4", "5", "6", "-",
             "X!", "sin", "cos", "tan", "e", "EE", "1", "2", "3", "+",
-            "Rad", "sin⁻¹", "cos⁻¹", "tan⁻¹", "π", "Rand", "0","0", ".", "=",
+            "Rad", "sin⁻¹", "cos⁻¹", "tan⁻¹", "π", "Rand", "0", ".", "=",
     };
 
     // Constructor
@@ -48,7 +48,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
         screen.setForeground(new Color(235, 233, 232));
         screen.setBorder(BorderFactory.createMatteBorder(1,1,1,1, new Color(50,50,47)));
         screen.setSize(900,400);
-        add(screen, BorderLayout.NORTH);aster
+        add(screen, BorderLayout.NORTH);
 
         // Initialize and configure the buttons panel
         JPanel buttonsPanel = new JPanel();
@@ -80,6 +80,8 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             } else {
                 button.setBackground(new Color(69, 68, 66)); // Set background color for other buttons
             }
+            // Increase font size
+            button.setFont(button.getFont().deriveFont(Font.BOLD, 20));
 
             buttonsPanel.add(button); // Add button to the buttons panel
         }
@@ -140,38 +142,25 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             case "sin":
                 currentText = "sin(" + currentText + ")"; // Append sine function to current text
                 break;
+            case "cos":
+                currentText = "cos(" + currentText + ")"; // Append cosine function to current text
+                break;
+            case "tan":
+                currentText = "tan(" + currentText + ")"; // Append tan function to current text
+                break;
             // Add cases for other buttons as needed
             default:
-                currentText += command; // Append the command to current text
+                // Append the command to current text
+                if (currentText.isEmpty() && command.equals("(")) {
+                    currentText += "(";
+                } else if (!currentText.isEmpty() && currentText.charAt(currentText.length() - 1) == ')' && "+-×÷".contains(command)) {
+                    currentText += command;
+                } else if (!currentText.isEmpty() && "+-×÷".contains(currentText.charAt(currentText.length() - 1) + "") && command.equals("(")) {
+                    currentText += "(";
+                } else {
+                    currentText +=  command;
+                }
                 break;
-
-        String command = e.getActionCommand();
-        if (command.equals("=")) {
-            currentText = currentText.replace("×", "*");
-            currentText = currentText.replace("÷", "/");
-            System.out.println(calc.eval(currentText));
-            double result = calc.eval(currentText);
-            if (result % 1 == 0){
-                int int_result = (int) result;
-                currentText = int_result + "0";
-            }
-            else{
-                currentText = result + "";
-            }
-        }
-        else if(command.equals("c")){
-            currentText = "0";
-        }
-        else if (command.equals("²√x")){
-            currentText = currentText.replace("²√x","sqrt");
-        }
-        else if (command.matches("\\+/-")) {
-            if (currentText.charAt(0) == '-') {
-                currentText = currentText.substring(1);
-            } else {
-                currentText = "-" + currentText;
-            }
-
         }
         screen.setText(currentText); // Update the text field with the current text
     }

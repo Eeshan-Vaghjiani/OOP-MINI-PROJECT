@@ -100,6 +100,16 @@ public class Calculator implements BasicCalculator{
                 } else {
                     throw new RuntimeException("Unexpected: " + (char)ch);
                 }
+                // Check for implicit multiplication if the next character is a number or opening parenthesis
+                while ((ch >= '0' && ch <= '9') || ch == '(') {
+                    if (ch == '(') {
+                        // Insert a multiplication operator
+                        x *= parseFactor();
+                    } else {
+                        // Skip any numbers
+                        nextChar();
+                    }
+                }
 
                 if (eat('^')) x = Math.pow(x, parseFactor()); // exponentiation
 
