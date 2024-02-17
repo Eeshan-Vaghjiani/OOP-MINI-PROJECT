@@ -17,7 +17,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             "2ⁿᵈ", "x²", "x³", " xʸ", "eˣ", "10ˣ", "7", "8", "9", "×",
             "1/x", "²√x", "∛x", "ʸ√ₓ", "ln", "log₁₀", "4", "5", "6", "-",
             "X!", "sin", "cos", "tan", "e", "EE", "1", "2", "3", "+",
-            "Rad", "sin⁻¹", "cos⁻¹", "tan⁻¹", "π", "Rand", "0", ".", "=",
+            "Rad", "sin⁻¹", "cos⁻¹", "tan⁻¹", "π", "Rand", "0","0", ".", "=",
     };
 
     // Constructor
@@ -147,6 +147,63 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                 break;
             case "tan":
                 currentText = "tan(" + currentText + ")"; // Append tan function to current text
+                break;
+                case "sin⁻¹":
+                currentText = "asin(" + currentText + ")"; // Append arcsine function to current text
+                break;
+            case "cos⁻¹":
+                currentText = "acos(" + currentText + ")";   // Append arccosine function to current text
+                break;
+            case "tan⁻¹":
+                
+                currentText = "atan(" + currentText + ")";   // Appendarctan function to current text
+                break;
+            case "1/x":
+                currentText = "1/(" + currentText + ")";     // Prepend division by x to the current text
+                break;
+            case "EE":
+                currentText += "E";        // Append Euler's number to the current text
+                break;
+            case "log₁₀":
+                currentText = "log10(" + currentText + ")";  // Append logarithm base 10 to the current text
+                break;
+            case "x²":
+                currentText = "(" + currentText + ")^2";          // Square the value of the last number in the equation
+                break;
+            case "x³":
+                currentText = "(" + currentText + ")^3";          // Raise current text to power of 3
+                break;
+            case " xʸ":
+                currentText += "^";        // Add a multiplication sign before raising to power
+                break;
+            case "²√x":
+                currentText = "sqrt(" + currentText + ")";             // Take square root of current text
+                break;
+            case "∛x":
+                currentText = "cbrt(" + currentText + ")";               // Take cube root of current text
+                break;
+            case "ʸ√ₓ":
+                currentText += "√";        // Add a square root symbol after multiplying by it
+                break;
+                case "X!": 
+                // Add factorial logic
+                if (!currentText.isEmpty()) {
+                    // Split currentText by operators to get the last number
+                    String[] parts = currentText.split("[+\\-*/]");
+                    String lastNumber = parts[parts.length - 1];
+                    // Calculate factorial of the last number
+                    int number = Integer.parseInt(lastNumber);
+                    long factorial = 1;
+                    for (int i = 1; i <= number; i++) {
+                        factorial *= i;
+                    }
+                    // Replace the last number with its factorial
+                    currentText = currentText.substring(0, currentText.length() - lastNumber.length()) + factorial;
+                }
+                break;
+            case "Rad":
+                double value = Double.parseDouble(currentText);
+                currentText = String.valueOf(Math.toRadians(value));
                 break;
             // Add cases for other buttons as needed
             default:
