@@ -8,6 +8,9 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 
     // Define instance variables
     public String currentText = ""; // Store current input text
+    public double memory;
+    public double value;
+
     public JTextField screen = new JTextField(); // Text field to display input and result
     Calculator calc = new Calculator(); // Calculator instance
 
@@ -19,6 +22,22 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             "X!", "sin", "cos", "tan", "e", "EE", "1", "2", "3", "+",
             "Rad", "sin⁻¹", "cos⁻¹", "tan⁻¹", "π", "Rand", "0","0", ".", "=",
     };
+    public void clearMemory() {
+        this.memory = 0.0;
+    }
+
+    public double getMemory() {
+        return memory;
+    }
+    public Object addToMemory() {
+        this.memory += value ;
+        return null;
+    }
+
+    public Object subtractFromMemory() {
+        this.memory -= value;
+        return null;
+    }
 
     // Constructor
     public CalculatorGUI() {
@@ -68,6 +87,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             // Adjust width of the "0" button
             if ("0".equals(label)) {
                 button.setPreferredSize(new Dimension(150, 70)); // Set custom size for "0" button
+
             } else {
                 button.setPreferredSize(new Dimension(75, 70)); // Set default size for other buttons
             }
@@ -204,6 +224,25 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                     double value = Double.parseDouble(currentText);
                     currentText = String.valueOf(Math.toRadians(value));
                     break;
+                case "mc":
+                    currentText = "";
+                    break;
+                case "mr":
+                     // Recall the value from memory
+                    currentText.equals(getMemory());
+                    break;
+                case "m+":
+                    currentText.equals(addToMemory()); // Add current value to memory
+                    currentText = ""; // Clear the current text
+                    break;
+                case "m-":
+                    currentText.equals(subtractFromMemory()); // Subtract current value from memory
+                    currentText = ""; // Clear the current text
+                    break;
+                case "Rand":
+                    currentText = String.valueOf(Math.random());
+                    currentText.equals(currentText.substring(0,currentText.length()-4));
+                break;
                 // Add cases for other buttons as needed
                 default:
                     // Append the command to current text
