@@ -2,6 +2,7 @@
 
 The Calculator project contains three main files,`Main.java`, `CalculatorGUI.java` and `Calculator.java`.
 
+![Screenshot of Calculator GUI](./Calc_Image.png)
 ## Main.java
 
 `Main.java` is the main entry point for the application. It instantiates and displays the `CalculatorGUI` frame.
