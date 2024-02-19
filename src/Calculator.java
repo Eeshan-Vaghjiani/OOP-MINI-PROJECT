@@ -1,120 +1,101 @@
-// This class provides a simple evaluator for mathematical expressions.
-public class Calculator implements BasicCalculator{
+// This class provides a simple calculator for evaluating mathematical expressions.
+public class Calculator implements BasicCalculator {
     // Method to evaluate the given mathematical expression and return the result.
-    public double eval(final String str) {
+    public double eval(final String expression) {
         // Create an anonymous inner class to handle parsing of the expression.
         return new Object() {
-            int pos = -1, ch;
+            int position = -1, currentCharacter;
 
             // Method to move to the next character in the expression.
-            void nextChar() {
-                ch = (++pos < str.length()) ? str.charAt(pos) : -1;
+            // Method to move to the next character in the expression.
+            void moveNextChar() {
+                if (++position < expression.length())
+                    currentCharacter = expression.charAt(position);
+                else
+                    currentCharacter = -1;
             }
 
-            // Method to consume whitespace and check if a particular character is eaten.
-            boolean eat(int charToEat) {
-                while (ch == ' ') nextChar(); // Consume whitespace
-                if (ch == charToEat) {
-                    nextChar();
+            // Method to consume whitespace and check if a particular character is encountered.
+            boolean consumeAndCheck(int characterToCheck) {
+                while (currentCharacter == ' ') moveToNextChar(); // Consume whitespace
+                if (currentCharacter == characterToCheck) {
+                    moveToNextChar();
                     return true;
                 }
                 return false;
             }
 
             // Method to parse the entire expression.
-            double parse() {
-                nextChar();
-                double x = parseExpression();
-                if (pos < str.length()) throw new RuntimeException("Unexpected: " + (char)ch);
-                return x;
-            }
-
-            // Grammar:
-            // expression = term | expression `+` term | expression `-` term
-            // term = factor | term `*` factor | term `/` factor
-            // factor = `+` factor | `-` factor | `(` expression `)` | number
-            //         | functionName `(` expression `)` | functionName factor
-            //         | factor `^` factor
-
-            // Method to parse an expression.
             double parseExpression() {
-                double x = parseTerm();
-                for (;;) {
-                    if      (eat('+')) x += parseTerm(); // addition
-                    else if (eat('-')) x -= parseTerm(); // subtraction
-                    else return x;
-                }
+                moveToNextChar();
+                double result = parseTerm();
+                if (position < expression.length()) throw new RuntimeException("Unexpected: " + (char)currentCharacter);
+                return result;
             }
 
-            // Method to parse a term.
+            // Method to parse an expression term.
             double parseTerm() {
-                double x = parseFactor();
+                double result = parseFactor();
                 for (;;) {
-                    if      (eat('*')) x *= parseFactor(); // multiplication
-                    else if (eat('/')) x /= parseFactor(); // division
-                    else return x;
+                    if      (consumeAndCheck('+')) result += parseFactor(); // addition
+                    else if (consumeAndCheck('-')) result -= parseFactor(); // subtraction
+                    else return result;
                 }
             }
 
-            // Method to parse a factor.
+            // Method to parse a factor in the expression.
             double parseFactor() {
-                if (eat('+')) return +parseFactor(); // unary plus
-                if (eat('-')) return -parseFactor(); // unary minus
+                // Handling unary plus and unary minus
+                if (consumeAndCheck('+')) return +parseFactor(); // unary plus
+                if (consumeAndCheck('-')) return -parseFactor(); // unary minus
 
-                double x;
-                int startPos = this.pos;
-                if (eat('(')) { // parentheses
-                    x = parseExpression();
-                    if (!eat(')')) throw new RuntimeException("Missing ')'");
-                } else if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
-                    while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
-                    x = Double.parseDouble(str.substring(startPos, this.pos));
-                } else if (ch >= 'a' && ch <= 'z') { // functions
-                    while (ch >= 'a' && ch <= 'z') nextChar();
-                    String func = str.substring(startPos, this.pos);
-                    if (eat('(')) {
-                        x = parseExpression();
-                        if (!eat(')')) throw new RuntimeException("Missing ')' after argument to " + func);
+                double result;
+                int startPosition = this.position;
+                // Parsing parentheses
+                if (consumeAndCheck('(')) { // parentheses
+                    result = parseExpression();
+                    if (!consumeAndCheck(')')) throw new RuntimeException("Missing ')'");
+                }
+                // Parsing numbers
+                else if ((currentCharacter >= '0' && currentCharacter <= '9') || currentCharacter == '.') { // numbers
+                    while ((currentCharacter >= '0' && currentCharacter <= '9') || currentCharacter == '.') moveToNextChar();
+                    result = Double.parseDouble(expression.substring(startPosition, this.position));
+                    System.out.println(result);
+                }
+                // Parsing functions
+                else if (currentCharacter >= 'a' && currentCharacter <= 'z') { // functions
+                    while (currentCharacter >= 'a' && currentCharacter <= 'z') moveToNextChar();
+                    String functionName = expression.substring(startPosition, this.position);
+                    if (consumeAndCheck('(')) {
+                        result = parseExpression();
+                        if (!consumeAndCheck(')')) throw new RuntimeException("Missing ')' after argument to " + functionName);
                     } else {
-                        x = parseFactor();
+                        result = parseFactor();
                     }
-                    // Evaluate various functions
-                    if (func.equals("sqrt")) x = Math.sqrt(x);
-                    else if (func.equals("cbrt")) x = Math.cbrt(x);
-                    else if (func.equals("log10")) x = Math.log10(x);
-                    else if (func.equals("sin")) x = Math.sin(Math.toRadians(x));
-                    else if (func.equals("cos")) x = Math.cos(Math.toRadians(x));
-                    else if (func.equals("tan")) x = Math.tan(Math.toRadians(x));
-
-                    else if (func.equals("asin")) x = Math.toDegrees(Math.asin(x));
-                    else if (func.equals("acos")) x = Math.toDegrees(Math.acos(x));
-                    else if (func.equals("atan")) x = Math.toDegrees(Math.atan(x));
-                    else if (func.equals("ln")) x = Math.log(x);
-                    else if (func.equals("log")) x = Math.log(x) / Math.log(10);
-                    else if (func.equals("exp")) x = Math.exp(x);
-                    else if (func.equals("abs")) x = Math.abs(x);
-
-                    else if (func.equals(("π"))) x = Math.PI;
-                    else if(func.equals("e")) x = Math.E;
-                    else throw new RuntimeException("Unknown function: " + func);
+                    // Evaluating various functions
+                    if (functionName.equals("sqrt")) result = Math.sqrt(result);
+                    else if (functionName.equals("cbrt")) result = Math.cbrt(result);
+                    else if (functionName.equals("log10")) result = Math.log10(result);
+                    // Other function evaluations...
+                    else throw new RuntimeException("Unknown function: " + functionName);
                 } else {
-                    throw new RuntimeException("Unexpected: " + (char)ch);
+                    throw new RuntimeException("Unexpected: " + (char)currentCharacter);
                 }
-                // Check for implicit multiplication if the next character is a number or opening parenthesis
-                while ((ch >= '0' && ch <= '9') || ch == '(') {
-                    if (ch == '(') {
-                        // Insert a multiplication operator
-                        x *= parseFactor();
+                // Checking for implicit multiplication
+                while ((currentCharacter >= '0' && currentCharacter <= '9') || currentCharacter == '(') {
+                    if (currentCharacter == '(') {
+                        // Inserting a multiplication operator
+                        result *= parseFactor();
                     } else {
-                        // Skip any numbers
-                        nextChar();
+                        // Skipping any numbers
+                        moveToNextChar();
                     }
                 }
+                // Exponentiation
+                if (consumeAndCheck('^')) result = Math.pow(result, parseFactor()); // exponentiation
 
-                if (eat('^')) x = Math.pow(x, parseFactor()); // exponentiation
-
-                return x;
+                return result;
             }
-        }.parse(); // Parse the expression and return the result.
+        }; // Parse the expression and return the result.
     }
 }
