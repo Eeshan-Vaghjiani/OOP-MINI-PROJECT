@@ -41,7 +41,7 @@ The Calculator project contains three main files,`Main.java`, `CalculatorGUI.jav
 
 ## Contributors
 
-- Dennis Murage
-- Kristina Kemoi
-- Eeshan Vaghjiani
-- Krishna Madhaparia
+- Dennis Murage - 139360
+- Kristina Kemoi - 168652
+- Eeshan Vaghjiani - 166981
+- Krishna Madhaparia - 166980
