@@ -8,7 +8,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 
     // Define instance variables
     public String currentText = ""; // Store current input text
-    public double memory;
+    public String memory;
     public double value;
 
     public JTextField screen = new JTextField(); // Text field to display input and result
@@ -20,22 +20,22 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             "2ⁿᵈ", "x²", "x³", " xʸ", "eˣ", "10ˣ", "7", "8", "9", "×",
             "1/x", "²√x", "∛x", "ʸ√ₓ", "ln", "log₁₀", "4", "5", "6", "-",
             "X!", "sin", "cos", "tan", "e", "EE", "1", "2", "3", "+",
-            "Rad", "sin⁻¹", "cos⁻¹", "tan⁻¹", "π", "Rand", "0","0", ".", "=",
+            "Rad", "sin⁻¹", "cos⁻¹", "tan⁻¹", "π", "Rand", "0"," ", ".", "=",
     };
     public void clearMemory() {
-        this.memory = 0.0;
+        this.memory = " ";
     }
 
-    public double getMemory() {
+    public String getMemory() {
         return memory;
     }
     public Object addToMemory() {
-        this.memory += value ;
+        this.memory = currentText;
         return null;
     }
 
     public Object subtractFromMemory() {
-        this.memory -= value;
+        this.memory = " ";
         return null;
     }
 
@@ -225,14 +225,14 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                     currentText = String.valueOf(Math.toRadians(value));
                     break;
                 case "mc":
-                    currentText = "";
+                    clearMemory();
                     break;
                 case "mr":
                      // Recall the value from memory
-                    currentText.equals(getMemory());
+                    currentText = getMemory() + "";
                     break;
                 case "m+":
-                    currentText.equals(addToMemory()); // Add current value to memory
+                    currentText = addToMemory() + ""; // Add current value to memory
                     currentText = ""; // Clear the current text
                     break;
                 case "m-":
