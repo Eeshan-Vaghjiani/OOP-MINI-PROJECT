@@ -32,6 +32,19 @@ public class CalculatorGUI extends JFrame implements ActionListener {
         "Rad", "sinh⁻¹", "cosh⁻¹", "tanh⁻¹", "π", "Rand", "0"," ", ".", "=",
     };
 
+    public void equals(){
+
+        currentText  = currentText.replace("×", "*");
+        currentText = currentText.replace("÷", "/");
+        double result = calc.eval(currentText);
+        if (result % 1 == 0) {
+            int int_result = (int) result;
+            currentText = int_result + "";
+        } else {
+            currentText = result + "";
+        }
+    }
+
     public void clearMemory() {
         this.memory = " ";
     }
@@ -131,7 +144,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                 // Handle different button actions
                 case "=":
                     // Evaluate expression
-                    currentText = currentText.replace("×", "*");
+                    currentText  = currentText.replace("×", "*");
                     currentText = currentText.replace("÷", "/");
                     double result = calc.eval(currentText);
                     if (result % 1 == 0) {
@@ -152,6 +165,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                     break;
                 case "%":
                     currentText += "/100"; // Append division by 100 to current text
+                    equals();
                     break;
                 case "+/-":
                     // Handle change of sign
@@ -169,51 +183,71 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                     break;
                 case "10ˣ":
                     currentText += "*10^"; // Append exponentiation expression to current text
+
                     break;
                 case "sin":
-                    currentText = "sin(" + currentText + ")"; // Append sine function to current text
+                    currentText = "sin(" + currentText + ")";// Append sine function to current text
+                    equals();
                     break;
                 case "cos":
                     currentText = "cos(" + currentText + ")"; // Append cosine function to current text
+                    equals();
                     break;
                 case "tan":
                     currentText = "tan(" + currentText + ")"; // Append tan function to current text
+                    equals();
                     break;
                 case "sin⁻¹":
                     currentText = "asin(" + currentText + ")"; // Append arcsine function to current text
+                    equals();
                     break;
                 case "cos⁻¹":
                     currentText = "acos(" + currentText + ")";   // Append arccosine function to current text
+                    equals();
                     break;
                 case "tan⁻¹":
                     currentText = "atan(" + currentText + ")";   // Appendarctan function to current text
+                    equals();
                     break;
                 case "1/x":
                     currentText = "1/(" + currentText + ")";     // Prepend division by x to the current text
+                    equals();
                     break;
                 case "EE":
                     currentText += "E";        // Append Euler's number to the current text
                     break;
                 case "log₁₀":
                     currentText = "log10(" + currentText + ")";  // Append logarithm base 10 to the current text
+                    equals();
                     break;
                 case "x²":
-                    currentText = "(" + currentText + ")^2";          // Square the value of the last number in the equation
+                    currentText = "(" + currentText + ")^2";// Square the value of the last number in the equation
+                    equals();
                     break;
                 case "x³":
                     currentText = "(" + currentText + ")^3";          // Raise current text to power of 3
+                    equals();
                     break;
                 case " xʸ":
                     currentText += "^";        // Add a multiplication sign before raising to power
                     break;
                 case "²√x":
-                    currentText = "sqrt(" + currentText + ")";             // Take square root of current text
+                    currentText = "sqrt(" + currentText + ")";// Take square root of current text
+                    equals();
                     break;
                 case "∛x":
                     currentText = "cbrt(" + currentText + ")";               // Take cube root of current text
+                    equals();
                     break;
                 case "ʸ√ₓ":
-                    currentText += "√";        // Add a square root symbol after multiplying by it
+                    String root = JOptionPane.showInputDialog("Enter the root (y):");
+                    if (root != null && !root.isEmpty()) {
+                        double y = Double.parseDouble(root);
+                        double x = Double.parseDouble(currentText);
+                        double results = Math.pow(x, 1 / y);
+                        currentText = Double.toString(results);
+                    }
+                    equals();
                     break;
                 case "X!":
                     // Add factorial logic
@@ -230,20 +264,21 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                         // Replace the last number with its factorial
                         currentText = currentText.substring(0, currentText.length() - lastNumber.length()) + factorial;
                     }
+                    equals();
                     break;
                 case "Rad":
                     double value = Double.parseDouble(currentText);
                     currentText = String.valueOf(Math.toRadians(value));
                     break;
                 case "mc":
-                    clearMemory();
+                    currentText = "";
                     break;
                 case "mr":
-                    // Recall the value from memory
-                    currentText = getMemory() + "";
+                     // Recall the value from memory
+                    currentText.equals(getMemory());
                     break;
                 case "m+":
-                    currentText = addToMemory() + ""; // Add current value to memory
+                    currentText.equals(addToMemory()); // Add current value to memory
                     currentText = ""; // Clear the current text
                     break;
                 case "m-":
@@ -254,11 +289,17 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                     currentText = String.valueOf(Math.random());
                     currentText.equals(currentText.substring(0,currentText.length()-4));
                     break;
+                case "eˣ":
+                    double exp= Math.E;
+                    currentText += ("*"+exp+"^");
+
+                    break;
                 case "2ⁿᵈ":
                     // Switch button labels
                     isSecondSet = !isSecondSet;
                     switchButtonLabels();
                     break;
+
                 // Add cases for other buttons as needed
                 default:
                     // Append the command to current text
@@ -286,6 +327,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 
         // Choose button labels based on current state
         String[] buttonLabels = isSecondSet ? buttonLabels2 : buttonLabels1;
+
 
         // Loop through button labels array to create buttons
         for (String label : buttonLabels) {
