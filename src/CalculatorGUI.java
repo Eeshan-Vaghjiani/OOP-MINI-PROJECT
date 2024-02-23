@@ -1,3 +1,7 @@
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Color;
+import java.awt.Canvas;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -8,7 +12,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 
     // Define instance variables
     public String currentText = ""; // Store current input text
-    public String memory;
+    public double memory;
     public double value;
     public boolean isSecondSet = false;
 
@@ -25,13 +29,19 @@ public class CalculatorGUI extends JFrame implements ActionListener {
     };
 
     private final String[] buttonLabels2 = {
-        "(", ")", "mc", "m+", "m-", "mr", "c", "+/-", "%", "÷",
-        "2ⁿᵈ", "x²", "x³", " xʸ", "eˣ", "10ˣ", "7", "8", "9", "×",
-        "1/x", "²√x", "∛x", "ʸ√ₓ", "ln", "log₁₀", "4", "5", "6", "-",
-        "X!", "sin⁻¹", "cos⁻¹", "tan⁻¹", "e", "EE", "1", "2", "3", "+",
-        "Rad", "sinh⁻¹", "cosh⁻¹", "tanh⁻¹", "π", "Rand", "0"," ", ".", "=",
+            "(", ")", "mc", "m+", "m-", "mr", "c", "+/-", "%", "÷",
+            "2ⁿᵈ", "x²", "x³", " xʸ", "eˣ", "10ˣ", "7", "8", "9", "×",
+            "1/x", "²√x", "∛x", "ʸ√ₓ", "ln", "log₁₀", "4", "5", "6", "-",
+            "X!", "sin⁻¹", "cos⁻¹", "tan⁻¹", "e", "EE", "1", "2", "3", "+",
+            "Rad", "sinh⁻¹", "cosh⁻¹", "tanh⁻¹", "π", "Rand", "0"," ", ".", "=",
     };
+    public void clearMemory() {
+        this.memory = 0.0;
+    }
 
+    public double getMemory() {
+        return memory;
+    }
     public void equals(){
 
         currentText  = currentText.replace("×", "*");
@@ -44,22 +54,13 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             currentText = result + "";
         }
     }
-
-    public void clearMemory() {
-        this.memory = " ";
-    }
-
-    public String getMemory() {
-        return memory;
-    }
-
     public Object addToMemory() {
-        this.memory = currentText;
+        this.memory += value ;
         return null;
     }
 
     public Object subtractFromMemory() {
-        this.memory = " ";
+        this.memory -= value;
         return null;
     }
 
@@ -75,7 +76,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
         // Initialize and configure the text field
         Font buttonFont = new Font("Arial", Font.PLAIN, 200); // Set font for text field
         screen.setHorizontalAlignment(JTextField.RIGHT); // Set text alignment to right
-        screen.setEditable(false); // Make text field non-editable
+        screen.setEditable(true); // Make text field non-editable
         screen.setPreferredSize(new Dimension(900, 100)); // Increase the height of the screen
         // Modify font size for screen text
         Font screenFont = screen.getFont();
@@ -86,7 +87,6 @@ public class CalculatorGUI extends JFrame implements ActionListener {
         screen.setSize(900, 300); // Set initial size
         add(screen, BorderLayout.NORTH); // Add text field to the frame's north position       screen.setFont(new Font("Arial", Font.BOLD, 20));
         screen.setHorizontalAlignment(JTextField.RIGHT);
-        screen.setEditable(false);
         screen.setBackground(new Color(50,50,47));
         screen.setForeground(new Color(235, 233, 232));
         screen.setBorder(BorderFactory.createMatteBorder(1,1,1,1, new Color(50,50,47)));
@@ -111,7 +111,6 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             // Adjust width of the "0" button
             if ("0".equals(label)) {
                 button.setPreferredSize(new Dimension(150, 70)); // Set custom size for "0" button
-
             } else {
                 button.setPreferredSize(new Dimension(75, 70)); // Set default size for other buttons
             }
@@ -119,7 +118,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             // Set background color based on button type
             if (".".equals(label) || label.matches("[0-9 ]")) {
                 button.setBackground(new Color(100, 100, 98)); // Set background color for numbers and decimal point
-            } else if ("÷×-+= ".contains(label)) {
+            } else if ("÷×-+=".contains(label)) {
                 button.setBackground(new Color(255, 159, 9)); // Set background color for operators
             } else {
                 button.setBackground(new Color(69, 68, 66)); // Set background color for other buttons
@@ -182,8 +181,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                     }
                     break;
                 case "10ˣ":
-                    currentText += "*10^"; // Append exponentiation expression to current text
-
+                    currentText += "10^"; // Append exponentiation expression to current text
                     break;
                 case "sin":
                     currentText = "sin(" + currentText + ")";// Append sine function to current text
@@ -209,12 +207,40 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                     currentText = "atan(" + currentText + ")";   // Appendarctan function to current text
                     equals();
                     break;
+                case"sinh":
+                    currentText = "sinh("+currentText + ")";
+                    equals();
+                    break;
+                case"cosh":
+                    currentText = "cosh("+currentText + ")";
+                    equals();
+                    break;
+                case"tanh":
+                    currentText = "tanh("+currentText + ")";
+                    equals();
+                    break;
+                case"sinh⁻¹":
+                    currentText = "sinh⁻¹("+currentText + ")";
+                    equals();
+                    break;
+                case"cosh⁻¹":
+                    currentText = "cosh⁻¹("+currentText + ")";
+                    equals();
+                    break;
+                case"tanh⁻¹":
+                    currentText = "tanh⁻¹("+currentText + ")";
+                    equals();
+                    break;
+                case"ln":
+                    currentText = "ln("+currentText+")";
+                    equals();
+                    break;
                 case "1/x":
                     currentText = "1/(" + currentText + ")";     // Prepend division by x to the current text
                     equals();
                     break;
                 case "EE":
-                    currentText += "E";        // Append Euler's number to the current text
+                    currentText += "*10^";        // Append Euler's number to the current text
                     break;
                 case "log₁₀":
                     currentText = "log10(" + currentText + ")";  // Append logarithm base 10 to the current text
@@ -288,7 +314,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                 case "Rand":
                     currentText = String.valueOf(Math.random());
                     currentText.equals(currentText.substring(0,currentText.length()-4));
-                    break;
+                break;
                 case "eˣ":
                     double exp= Math.E;
                     currentText += ("*"+exp+"^");
@@ -299,7 +325,6 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                     isSecondSet = !isSecondSet;
                     switchButtonLabels();
                     break;
-
                 // Add cases for other buttons as needed
                 default:
                     // Append the command to current text
@@ -319,15 +344,12 @@ public class CalculatorGUI extends JFrame implements ActionListener {
         }
         screen.setText(currentText); // Update the text field with the current text
     }
-
-    // Method to switch button labels
     private void switchButtonLabels() {
         JPanel buttonsPanel = (JPanel) getContentPane().getComponent(1); // Get the buttons panel
         buttonsPanel.removeAll(); // Remove all buttons
 
         // Choose button labels based on current state
         String[] buttonLabels = isSecondSet ? buttonLabels2 : buttonLabels1;
-
 
         // Loop through button labels array to create buttons
         for (String label : buttonLabels) {

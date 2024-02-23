@@ -1,3 +1,5 @@
+import javax.swing.text.Style;
+
 // This class provides a simple evaluator for mathematical expressions.
 public class Calculator implements BasicCalculator{
     // Method to evaluate the given mathematical expression and return the result.
@@ -55,7 +57,6 @@ public class Calculator implements BasicCalculator{
                     else return x;
                 }
             }
-
             // Method to parse a factor.
             double parseFactor() {
                 if (eat('+')) return +parseFactor(); // unary plus
@@ -85,10 +86,15 @@ public class Calculator implements BasicCalculator{
                     else if (func.equals("sin")) x = Math.sin(Math.toRadians(x));
                     else if (func.equals("cos")) x = Math.cos(Math.toRadians(x));
                     else if (func.equals("tan")) x = Math.tan(Math.toRadians(x));
-
                     else if (func.equals("asin")) x = Math.toDegrees(Math.asin(x));
                     else if (func.equals("acos")) x = Math.toDegrees(Math.acos(x));
                     else if (func.equals("atan")) x = Math.toDegrees(Math.atan(x));
+                    else if(func.equals("sinh")) x = Math.toRadians(Math.sinh(x));
+                    else if(func.equals("cosh")) x = Math.toRadians(Math.cosh(x));
+                    else if(func.equals("tanh")) x = Math.toRadians(Math.tanh(x));
+                    else if(func.equals("sinh⁻¹")) x = (Math.toRadians(Math.log(x + Math.sqrt(x*x + 1))));
+                    else if(func.equals("cosh⁻¹")) x = Math.toRadians(Math.log(x + Math.sqrt(x*x - 1.0)));
+                    else if(func.equals("tanh⁻¹")) x = Math.toRadians(0.5*Math.log( (x + 1.0) / (x - 1.0) ));
                     else if (func.equals("ln")) x = Math.log(x);
                     else if (func.equals("log")) x = Math.log(x) / Math.log(10);
                     else if (func.equals("exp")) x = Math.exp(x);
