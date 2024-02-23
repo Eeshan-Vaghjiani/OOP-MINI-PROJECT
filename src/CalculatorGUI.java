@@ -10,18 +10,28 @@ public class CalculatorGUI extends JFrame implements ActionListener {
     public String currentText = ""; // Store current input text
     public String memory;
     public double value;
+    public boolean isSecondSet = false;
 
     public JTextField screen = new JTextField(); // Text field to display input and result
     Calculator calc = new Calculator(); // Calculator instance
 
     // Define button labels
-    private final String[] buttonLabels = {
+    private final String[] buttonLabels1 = {
             "(", ")", "mc", "m+", "m-", "mr", "c", "+/-", "%", "÷",
             "2ⁿᵈ", "x²", "x³", " xʸ", "eˣ", "10ˣ", "7", "8", "9", "×",
             "1/x", "²√x", "∛x", "ʸ√ₓ", "ln", "log₁₀", "4", "5", "6", "-",
             "X!", "sin", "cos", "tan", "e", "EE", "1", "2", "3", "+",
-            "Rad", "sin⁻¹", "cos⁻¹", "tan⁻¹", "π", "Rand", "0"," ", ".", "=",
+            "Rad", "sinh", "cosh", "tanh", "π", "Rand", "0"," ", ".", "=",
     };
+
+    private final String[] buttonLabels2 = {
+        "(", ")", "mc", "m+", "m-", "mr", "c", "+/-", "%", "÷",
+        "2ⁿᵈ", "x²", "x³", " xʸ", "eˣ", "10ˣ", "7", "8", "9", "×",
+        "1/x", "²√x", "∛x", "ʸ√ₓ", "ln", "log₁₀", "4", "5", "6", "-",
+        "X!", "sin⁻¹", "cos⁻¹", "tan⁻¹", "e", "EE", "1", "2", "3", "+",
+        "Rad", "sinh⁻¹", "cosh⁻¹", "tanh⁻¹", "π", "Rand", "0"," ", ".", "=",
+    };
+
     public void clearMemory() {
         this.memory = " ";
     }
@@ -29,6 +39,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
     public String getMemory() {
         return memory;
     }
+
     public Object addToMemory() {
         this.memory = currentText;
         return null;
@@ -76,7 +87,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
         add(buttonsPanel, BorderLayout.CENTER); // Add buttons panel to the frame's center position
 
         // Loop through button labels array to create buttons
-        for (String label : buttonLabels) {
+        for (String label : buttonLabels1) {
             JButton button = new JButton(label); // Create button with current label
             button.addActionListener(this); // Add action listener to the button
             button.setFocusable(false); // Set focusable to false to prevent focus highlighting
@@ -228,7 +239,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                     clearMemory();
                     break;
                 case "mr":
-                     // Recall the value from memory
+                    // Recall the value from memory
                     currentText = getMemory() + "";
                     break;
                 case "m+":
@@ -242,7 +253,12 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                 case "Rand":
                     currentText = String.valueOf(Math.random());
                     currentText.equals(currentText.substring(0,currentText.length()-4));
-                break;
+                    break;
+                case "2ⁿᵈ":
+                    // Switch button labels
+                    isSecondSet = !isSecondSet;
+                    switchButtonLabels();
+                    break;
                 // Add cases for other buttons as needed
                 default:
                     // Append the command to current text
@@ -261,5 +277,48 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             currentText = "Error";
         }
         screen.setText(currentText); // Update the text field with the current text
+    }
+
+    // Method to switch button labels
+    private void switchButtonLabels() {
+        JPanel buttonsPanel = (JPanel) getContentPane().getComponent(1); // Get the buttons panel
+        buttonsPanel.removeAll(); // Remove all buttons
+
+        // Choose button labels based on current state
+        String[] buttonLabels = isSecondSet ? buttonLabels2 : buttonLabels1;
+
+        // Loop through button labels array to create buttons
+        for (String label : buttonLabels) {
+            JButton button = new JButton(label); // Create button with current label
+            button.addActionListener(this); // Add action listener to the button
+            button.setFocusable(false); // Set focusable to false to prevent focus highlighting
+            button.setForeground(new Color(235, 233, 232)); // Set text color
+            button.setBorder(BorderFactory.createEtchedBorder()); // Set border
+            button.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(50, 50, 47))); // Set border color
+
+            // Adjust width of the "0" button
+            if ("0".equals(label)) {
+                button.setPreferredSize(new Dimension(150, 70)); // Set custom size for "0" button
+
+            } else {
+                button.setPreferredSize(new Dimension(75, 70)); // Set default size for other buttons
+            }
+
+            // Set background color based on button type
+            if (".".equals(label) || label.matches("[0-9 ]")) {
+                button.setBackground(new Color(100, 100, 98)); // Set background color for numbers and decimal point
+            } else if ("÷×-+= ".contains(label)) {
+                button.setBackground(new Color(255, 159, 9)); // Set background color for operators
+            } else {
+                button.setBackground(new Color(69, 68, 66)); // Set background color for other buttons
+            }
+            // Increase font size
+            button.setFont(button.getFont().deriveFont(Font.BOLD, 20));
+
+            buttonsPanel.add(button); // Add button to the buttons panel
+        }
+
+        revalidate(); // Revalidate the layout
+        repaint(); // Repaint the frame
     }
 }
