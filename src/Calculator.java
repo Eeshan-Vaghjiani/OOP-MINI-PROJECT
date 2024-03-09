@@ -96,7 +96,7 @@ public class Calculator implements BasicCalculator{
                     else if(func.equals("cosh⁻¹")) x = Math.toRadians(Math.log(x + Math.sqrt(x*x - 1.0)));
                     else if(func.equals("tanh⁻¹")) x = Math.toRadians(0.5*Math.log( (x + 1.0) / (x - 1.0) ));
                     else if (func.equals("ln")) x = Math.log(x);
-                    else if (func.equals("log")) x = Math.log(x) / Math.log(10);
+                    else if (func.equals("log")) x = (Math.log10(x)-1) ;
                     else if (func.equals("exp")) x = Math.exp(x);
                     else if (func.equals("abs")) x = Math.abs(x);
                     else if (func.equals("Rand")) x = Math.random();
