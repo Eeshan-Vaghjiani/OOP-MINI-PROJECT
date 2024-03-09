@@ -12,8 +12,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 
     // Define instance variables
     public String currentText = ""; // Store current input text
-    public double memory;
-    public double value;
+    public String memory;
     public boolean isSecondSet = false;
 
     public JTextField screen = new JTextField(); // Text field to display input and result
@@ -36,11 +35,11 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             "Rad", "sinh⁻¹", "cosh⁻¹", "tanh⁻¹", "π", "Rand", "0"," ", ".", "=",
     };
     public void clearMemory() {
-        this.memory = 0.0;
+        this.memory = "";
     }
 
-    public double getMemory() {
-        return memory;
+    public void getMemory() {
+        currentText = this.memory;
     }
     public void equals(){
 
@@ -54,14 +53,12 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             currentText = result + "";
         }
     }
-    public Object addToMemory() {
-        this.memory += value ;
-        return null;
+    public void addToMemory() {
+        this.memory = currentText ;
     }
 
-    public Object subtractFromMemory() {
-        this.memory -= value;
-        return null;
+    public void subtractFromMemory() {
+        this.memory = "";
     }
 
     // Constructor
@@ -243,6 +240,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                     currentText += "*10^";        // Append Euler's number to the current text
                     break;
                 case "log₁₀":
+
                     currentText = "log10(" + currentText + ")";  // Append logarithm base 10 to the current text
                     equals();
                     break;
@@ -278,6 +276,8 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                 case "X!":
                     // Add factorial logic
                     if (!currentText.isEmpty()) {
+                        double num = Double.parseDouble(currentText);
+                        if(num < 0)throw new RuntimeException("no negative factorial");
                         // Split currentText by operators to get the last number
                         String[] parts = currentText.split("[+\\-*/]");
                         String lastNumber = parts[parts.length - 1];
@@ -289,6 +289,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                         }
                         // Replace the last number with its factorial
                         currentText = currentText.substring(0, currentText.length() - lastNumber.length()) + factorial;
+
                     }
                     equals();
                     break;
@@ -297,18 +298,18 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                     currentText = String.valueOf(Math.toRadians(value));
                     break;
                 case "mc":
-                    currentText = "";
+                    clearMemory();
                     break;
                 case "mr":
                      // Recall the value from memory
-                    currentText.equals(getMemory());
+                    getMemory();
                     break;
                 case "m+":
-                    currentText.equals(addToMemory()); // Add current value to memory
+                    addToMemory(); // Add current value to memory
                     currentText = ""; // Clear the current text
                     break;
                 case "m-":
-                    currentText.equals(subtractFromMemory()); // Subtract current value from memory
+                    subtractFromMemory(); // Subtract current value from memory
                     currentText = ""; // Clear the current text
                     break;
                 case "Rand":
